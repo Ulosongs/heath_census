@@ -25,8 +25,8 @@ function resetForm() {
 
 function searchCondition() {
     const input = document.getElementById("conditionInput").value.toLowerCase();
-    const resultDiv = document.getElementById("result");
-    resultDiv = "";
+    let resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = '';
 
     fetch('health_analysis.json')
     .then(response => response.json())
@@ -57,18 +57,18 @@ function generateReport() {
     let numPatients = patients.length;
     let numConditions = {
         Diabetes: 0,
-        Thyriod: 0,
+        Thyroid: 0,
         "High Blood Pressure": 0
     };
     let countConditionsBySex = {
         Male: {
             Diabetes: 0,
-            Thyriod: 0,
+            Thyroid: 0,
             "High Blood Pressure": 0
         },
         Female: {
             Diabetes: 0,
-            Thyriod: 0,
+            Thyroid: 0,
             "High Blood Pressure": 0
         }
     };
@@ -78,19 +78,20 @@ function generateReport() {
         countConditionsBySex[patient.sex][patient.condition]++;
     });
 
-    report.innerHTML = `Number of patients: ${numPatients}`;
-    report.innerHTML += `Conditions Breakdown: <br>`;
-    numConditions.forEach(condition =>{
+    report.innerHTML = `Number of patients: ${numPatients}<br>`;
+    report.innerHTML += `<br>Conditions Breakdown: <br>`;
+    for (const condition in numConditions) {
         report.innerHTML += `${condition}: ${numConditions[condition]}<br>`;
-    });
+    }
 
-    report.innerHTML = `Sex-based conditions: <br>`;
-    countConditionsBySex.forEach(sex => {
-        report.innerHTML += `${sex}:`;
-        sex.forEach(condition => {
-            report.innerHTML += ` ${condition}: ${countConditionsBySex[sex][condition]} <br>`;
-        });
-    });
+    report.innerHTML += `<br>Sex-based conditions:<br>`;
+    for (const sex in countConditionsBySex) {
+        report.innerHTML += `${sex}:<br>`;
+        for (const condition in countConditionsBySex[sex]) {
+            report.innerHTML += ` &nbsp;&nbsp;${condition}: ${countConditionsBySex[sex][condition]} <br>`;
+        };
+    }
 }
 
 addPatientButton.addEventListener('click', addPatient);
+btnSearch.addEventListener('click', searchCondition);
